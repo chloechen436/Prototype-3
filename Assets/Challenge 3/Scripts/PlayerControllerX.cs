@@ -17,10 +17,12 @@ public class PlayerControllerX : MonoBehaviour
     public AudioClip moneySound;
     public AudioClip explodeSound;
 
+    public float ceiling = 14.36f;
 
     // Start is called before the first frame update
     void Start()
     {
+        playerRb = GetComponent<Rigidbody>();
         Physics.gravity *= gravityModifier;
         playerAudio = GetComponent<AudioSource>();
 
@@ -33,10 +35,18 @@ public class PlayerControllerX : MonoBehaviour
     void Update()
     {
         // While space is pressed and player is low enough, float up
+        
         if (Input.GetKey(KeyCode.Space) && !gameOver)
         {
-            playerRb.AddForce(Vector3.up * floatForce);
+            playerRb.AddForce(Vector3.up * floatForce, ForceMode.Impulse);
         }
+
+        if (transform.position.y > ceiling)
+        {
+            transform.position = new Vector3(transform.position.x, ceiling, transform.position.z);
+            playerRb.velocity = Vector3.zero;
+        }
+
     }
 
     private void OnCollisionEnter(Collision other)
